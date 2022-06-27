@@ -1,23 +1,28 @@
-//
-// Created by Camiel Verdult & Marnix Laar on 22/06/2022.
-//
+#include "device_file.h"
+#include <linux/init.h>       /* module_init, module_exit */
+#include <linux/module.h>     /* version info, MODULE_LICENSE, MODULE_AUTHOR, printk() */
 
-#include <linux/init.h>
-#include <linux/module.h>
-#include <linux/kernel.h>
+MODULE_DESCRIPTION("Simple Linux driver");
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Laar en Verdult");
 
-static int my_init(void)
+/*===============================================================================================*/
+static int simple_driver_init(void)
 {
-    struct cdev *my_cdev = cdev_alloc();
-    my_cdev->ops = &my_fops;
+    int result = 0;
+    printk( KERN_NOTICE "Laar-Verdult-driver: Initialization started\n" );
 
-    return 0;
+    result = register_device();
+    return result;
 }
 
-static void my_exit(void)
+/*===============================================================================================*/
+static void simple_driver_exit(void)
 {
-    return;
+    printk( KERN_NOTICE "Laar-Verdult-driver: Exiting\n" );
+    unregister_device();
 }
 
-module_init(my_init);
-module_exit(my_exit);
+/*===============================================================================================*/
+module_init(simple_driver_init);
+module_exit(simple_driver_exit);
